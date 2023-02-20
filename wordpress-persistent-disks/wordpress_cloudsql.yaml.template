@@ -67,7 +67,7 @@ spec:
           secret:
             secretName: cloudsql-instance-credentials
         - configMap:
-          defaultMode: 420
-          name: wp-php-config
+            defaultMode: 420
+            name: wp-php-config
           name: php-config
 
