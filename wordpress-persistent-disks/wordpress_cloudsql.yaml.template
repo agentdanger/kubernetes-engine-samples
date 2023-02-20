@@ -37,6 +37,9 @@ spec:
           volumeMounts:
             - name: wordpress-persistent-storage
               mountPath: /var/www/html
+            - mountPath: /usr/local/etc/php/conf.d/uploads.ini
+              name: php-config
+              subPath: uploads.ini
         # Change ${INSTANCE_CONNECTION_NAME} here to include your GCP
         # project, the region of your Cloud SQL instance and the name
         # of your Cloud SQL instance. The format is
@@ -63,4 +66,8 @@ spec:
         - name: cloudsql-instance-credentials
           secret:
             secretName: cloudsql-instance-credentials
+        - configMap:
+          defaultMode: 420
+          name: wp-php-config
+          name: php-config
 
