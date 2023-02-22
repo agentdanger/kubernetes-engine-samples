@@ -1,0 +1,9 @@
+  apiVersion: networking.gke.io/v1
+  kind: ManagedCertificate
+  metadata:
+    name: cavea-wp-cert
+  spec:
+    domains:
+      - empiresports.gg
+      - www.empiresports.gg
+      - app.empiresports.gg
