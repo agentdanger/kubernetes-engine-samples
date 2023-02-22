@@ -19,7 +19,7 @@ kind: Ingress
 metadata:
   name: wordpress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: cavea-wp-ip
+    kubernetes.io/ingress.global-static-ip-name: empire-sports-wp
     networking.gke.io/managed-certificates: cavea-wp-cert
     kubernetes.io/ingress.class: "gce"
   labels:
