@@ -69,5 +69,5 @@ spec:
      protocol: TCP
  selector:
    app: wordpress
-[END gke_wordpress_persistent_disks_wordpress_service_service_wordpress]
----
+# [END gke_wordpress_persistent_disks_wordpress_service_service_wordpress]
+# ---
