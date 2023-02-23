@@ -53,8 +53,8 @@
 #               number: 80
 
 
-if you need this code below, just delete the hash.
----
+# if you need this code below, just delete the hash.
+# ---
 apiVersion: v1
 kind: Service
 metadata:
