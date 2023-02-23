@@ -13,7 +13,7 @@ spec:
     http:
       paths:
       - backend:
-        service:
-          name: wordpress-1-wordpress-svc
-          port: 
-            number: 80
+          service:
+            name: wordpress-1-wordpress-svc
+            port: 
+              number: 80
