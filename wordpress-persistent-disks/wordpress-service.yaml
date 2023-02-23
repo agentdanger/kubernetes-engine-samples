@@ -42,11 +42,11 @@ metadata:
 spec:
   rules:
   - host: empiresports.gg
-  http:
-    paths:
-    - backend:
-      serviceName: cavea-wp-backend
-      servicePort: 80
+    http:
+      paths:
+      - backend:
+        serviceName: cavea-wp-backend
+        servicePort: 80
 
 
 #if you need this code below, just delete the hash.
