@@ -32,7 +32,7 @@ spec:
                 name: cloudsql-db-credentials
                 key: password
           ports:
-            - containerPort: 8080
+            - containerPort: 80
               name: wordpress
           volumeMounts:
             - name: wordpress-persistent-storage

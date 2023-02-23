@@ -26,25 +26,27 @@ spec:
     app: wordpress
     tier: web
   ports:
-  - port: 8080
-    targetPort: 8080
-    protocol: TCP
+  - port: 80
+    targetPort: http
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: wordpress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: "empire-sports-wp"
-    networking.gke.io/managed-certificates: "cavea-wp-cert"
+    kubernetes.io/ingress.global-static-ip-name: empire-sports-wp
+    networking.gke.io/managed-certificates: cavea-wp-cert
+    kubernetes.io/ingress.allow-http: "false"
   labels:
     app: wordpress
 spec:
-  defaultBackend:
-    service:
-      name: cavea-wp-backend
-      port:
-        number: 8080
+  rules:
+  - host: empiresports.gg
+  http:
+    paths:
+    - backend:
+      serviceName: cavea-wp-backend
+      servicePort: 80
 
 
 #if you need this code below, just delete the hash.
