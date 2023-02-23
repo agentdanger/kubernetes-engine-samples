@@ -14,60 +14,60 @@
 # limitations under the License.
 
 # [START gke_wordpress_persistent_disks_wordpress_service_service_wordpress]
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: cavea-wp-backend
+#   labels:
+#     app: wordpress
+# spec:
+#   type: NodePort
+#   selector:
+#     app: wordpress
+#     tier: web
+#   ports:
+#   - port: 80
+#     targetPort: http
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: wordpress
+#   annotations:
+#     kubernetes.io/ingress.global-static-ip-name: empire-sports-wp
+#     networking.gke.io/managed-certificates: cavea-wp-cert
+#     kubernetes.io/ingress.allow-http: "false"
+#   labels:
+#     app: wordpress
+# spec:
+#   rules:
+#   - host: "empiresports.gg"
+#     http:
+#       paths:
+#       - pathType: Prefix
+#         path: "/"
+#         backend:
+#           service:
+#             name: cavea-wp-backend
+#             port:
+#               number: 80
+
+
+if you need this code below, just delete the hash.
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cavea-wp-backend
-  labels:
-    app: wordpress
+ labels:
+   app: wordpress
+ name: wordpress
 spec:
-  type: NodePort
-  selector:
-    app: wordpress
-    tier: web
-  ports:
-  - port: 80
-    targetPort: http
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: wordpress
-  annotations:
-    kubernetes.io/ingress.global-static-ip-name: empire-sports-wp
-    networking.gke.io/managed-certificates: cavea-wp-cert
-    kubernetes.io/ingress.allow-http: "false"
-  labels:
-    app: wordpress
-spec:
-  rules:
-  - host: "empiresports.gg"
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: cavea-wp-backend
-            port:
-              number: 80
-
-
-#if you need this code below, just delete the hash.
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  labels:
-#    app: wordpress
-#  name: wordpress
-#spec:
-#  type: LoadBalancer
-#  ports:
-#    - port: 80
-#      targetPort: 80
-#      protocol: TCP
-#  selector:
-#    app: wordpress
-# [END gke_wordpress_persistent_disks_wordpress_service_service_wordpress]
+ type: LoadBalancer
+ ports:
+   - port: 80
+     targetPort: 80
+     protocol: TCP
+ selector:
+   app: wordpress
+[END gke_wordpress_persistent_disks_wordpress_service_service_wordpress]
 ---
