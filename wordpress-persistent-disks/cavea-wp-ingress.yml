@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cavea-wp-ingress
+  namespace: cavea-wp
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: empire-sports-wp
+    networking.gke.io/managed-certificates: cavea-wp-cert
+    kubernetes.io/ingress.allow-http: "false"
+spec:
+  rules:
+  - host: empiresports.gg
+    http:
+      paths:
+      - backend:
+        serviceName: wordpress-1-wordpress-svc
+        servicePort: 80
