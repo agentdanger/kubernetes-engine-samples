@@ -26,8 +26,8 @@ spec:
     app: wordpress
     tier: web
   ports:
-  - port: 8080
-    targetPort: 80
+  - port: 80
+    targetPort: 8080
     protocol: TCP
 ---
 apiVersion: networking.k8s.io/v1
@@ -45,7 +45,7 @@ spec:
     service:
       name: cavea-wp-backend
       port:
-        number: 8080
+        number: 80
 
 
 #if you need this code below, just delete the hash.
