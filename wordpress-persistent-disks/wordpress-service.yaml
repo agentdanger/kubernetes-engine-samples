@@ -41,14 +41,16 @@ metadata:
     app: wordpress
 spec:
   rules:
-  - host: empiresports.gg
+  - host: "empiresports.gg"
     http:
       paths:
-      - backend:
-        service:
-          name: cavea-wp-backend
-          port:
-            number: 80
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: cavea-wp-backend
+            port:
+              number: 80
 
 
 #if you need this code below, just delete the hash.
