@@ -37,7 +37,6 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "empire-sports-wp"
     networking.gke.io/managed-certificates: "cavea-wp-cert"
-    kubernetes.io/ingress.class: "gce"
   labels:
     app: wordpress
 spec:
