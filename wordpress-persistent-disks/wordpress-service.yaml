@@ -45,8 +45,10 @@ spec:
     http:
       paths:
       - backend:
-        serviceName: cavea-wp-backend
-        servicePort: 80
+        service:
+          name: cavea-wp-backend
+          port:
+            number: 80
 
 
 #if you need this code below, just delete the hash.
