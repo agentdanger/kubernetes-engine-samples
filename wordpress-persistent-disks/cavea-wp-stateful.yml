@@ -1,0 +1,169 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: wordpress-webserver
+    app.kubernetes.io/name: wordpress-1
+  name: wordpress-1-wordpress
+  namespace: cavea-wp
+  ownerReferences:
+  - apiVersion: app.k8s.io/v1beta1
+    blockOwnerDeletion: true
+    kind: Application
+    name: wordpress-1
+    uid: fc9e5eb7-b20d-4447-8549-386d6fd76fb4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: wordpress-webserver
+      app.kubernetes.io/name: wordpress-1
+  serviceName: wordpress-1-wordpress-svc
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: wordpress-webserver
+        app.kubernetes.io/name: wordpress-1
+    spec:
+      containers:
+      - env:
+        - name: WP_ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: wp-user
+              name: wordpress-1-wordpress-secret
+        - name: WP_ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              key: wp-email
+              name: wordpress-1-wordpress-secret
+        - name: WP_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: wp-password
+              name: wordpress-1-wordpress-secret
+        - name: WORDPRESS_DB_HOST
+          value: wordpress-1-mysql-svc
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              key: wp-user
+              name: wordpress-1-mysql-secret
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: wp-password
+              name: wordpress-1-mysql-secret
+        - name: WORDPRESS_DB_NAME
+          value: wordpress
+        image: gcr.io/cloud-marketplace/google/wordpress:6.1.1-20230219-170758
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - "/bin/bash"
+              - "-eu"
+              - "/wp-install.sh"
+        livenessProbe:
+          httpGet:
+            path: "/"
+            port: 80
+          initialDelaySeconds: 120
+        name: wordpress
+        ports:
+        - containerPort: 80
+          name: http
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: "/"
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 2
+          timeoutSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: "/var/www/html"
+          name: wordpress-1-wordpress-pvc
+          subPath: wp
+        - mountPath: "/wp-install.sh"
+          name: config-map
+          readOnly: true
+          subPath: wp-install.sh
+        - mountPath: "/var/www/html/.htaccess"
+          name: apache-config
+          readOnly: true
+          subPath: ".htaccess"
+        - mountPath: /usr/local/etc/php/conf.d/uploads.ini
+          name: php-config
+          subPath: uploads.ini
+      - args:
+        - "--scrape_uri=http://127.0.0.1/server-status?auto"
+        image: gcr.io/cloud-marketplace/google/wordpress/apache-exporter:6.1.1-20230219-170758
+        livenessProbe:
+          httpGet:
+            path: "/metrics"
+            port: 9117
+        name: apache-exporter
+        ports:
+        - containerPort: 9117
+          name: exporter
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: "/metrics"
+            port: 9117
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 30
+      initContainers:
+      - command:
+        - sh
+        - "-c"
+        - |
+          echo 'Waiting for MySQL to become ready...'
+          until printf "." && nc -z -w 2 "wordpress-1-mysql-svc" 3306; do
+            sleep 2;
+          done;
+          echo 'MySQL is ready'
+        image: busybox:1.35
+        imagePullPolicy: IfNotPresent
+        name: check-db
+      volumes:
+      - configMap:
+          items:
+          - key: ".htaccess"
+            path: ".htaccess"
+          name: wordpress-1-wordpress-config
+        name: apache-config
+      - configMap:
+          items:
+          - key: wp-install.sh
+            path: wp-install.sh
+          name: wordpress-1-wordpress-config
+        name: config-map
+      - configMap:
+        defaultMode: 420
+        name: wp-php-config
+      name: php-config
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app.kubernetes.io/component: wordpress-webserver
+        app.kubernetes.io/name: wordpress-1
+      name: wordpress-1-wordpress-pvc
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: premium-rwo
