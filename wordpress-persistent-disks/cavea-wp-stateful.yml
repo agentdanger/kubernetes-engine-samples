@@ -149,8 +149,8 @@ spec:
           name: wordpress-1-wordpress-config
         name: config-map
       - configMap:
-        name: wp-php-config
-      name: php-config
+          name: wp-php-config
+        name: php-config
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
